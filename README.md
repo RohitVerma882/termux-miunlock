@@ -24,40 +24,49 @@ devices. (and unlock the bootloader) using Termux.
 
 
 ## Instructions
-* Install required apps [termux](https://github.com/termux/termux-app), [termux-api](https://github.com/termux/termux-api) and ```account.apk``` from repo.
+1) Install required apps [termux](https://github.com/termux/termux-app), [termux-api](https://github.com/termux/termux-api) and ```account.apk``` from repo.
 
-* Clone this repo.
+2) Clone this repo.
 ```console
 git clone https://github.com/RohitVerma882/termux-miunlock.git && cd termux-miunlock
 ```
 
-* Run ```setup.sh``` to install required packages.
+3) Run ```setup.sh``` to install required packages.
 ```console
 chmod +x setup.sh && ./setup.sh
 ```
 
-* Get device ```product```
+4) Get device ```product```
 ```console
 mi-fastboot getvar product
 ```
 
-* Get device ```token```
+5) Get device ```token```
 ```console
 mi-fastboot getvar token
 ```
 
-* Get device ```token``` for mtk device.
+6) Get device ```token``` for mtk device.
 ```console
 mi-fastboot oem get_token
 ```
 
-* Run ```get_token.sh``` script with required arguments.
+7) Run ```get_token.sh``` script with required arguments.
 ```console
 chmod +x get_token.sh && ./get_token.sh --product=PRODUCT --token=TOKEN DATA
 ```
 if the code succeeds it will give you a really long string which is the unlock token.
 
-* Type:
+8) Convert unlock token string to binary token.
+  ```console
+  echo "UNLOCK_TOKEN" | xxd -r -p > token.bin
+  ```
+
+9) Type:
+```console
+fastboot stage token.bin && fastboot oem unlock
+```
+Or (skip step 8):
 ```console
 mi-fastboot oem-unlock "UNLOCK_TOKEN"
 ```
