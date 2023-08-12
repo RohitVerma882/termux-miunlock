@@ -64,7 +64,7 @@ if the code succeeds it will give you a really long string which is the unlock t
 
 9) Type:
 ```console
-fastboot stage token.bin && fastboot oem unlock
+mi-fastboot stage token.bin && mi-fastboot oem unlock
 ```
 Or (skip step 8):
 ```console
