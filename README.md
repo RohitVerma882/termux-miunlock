@@ -57,12 +57,20 @@ chmod +x get_token.sh && ./get_token.sh --product=PRODUCT --token=TOKEN DATA
 ```
 if the code succeeds it will give you a really long string which is the unlock token.
 
-8) Convert unlock token string to binary token.
+You should pass correct region which you used in account.apk if you got error 20045
+
+available options: `india, global, china, russia, europe`
+
+```ssh
+chmod +x get_token.sh && ./get_token.sh --product=PRODUCT --region=REGION --token=TOKEN DATA
+```
+
+1) Convert unlock token string to binary token.
   ```console
   echo "UNLOCK_TOKEN" | xxd -r -p > token.bin
   ```
 
-9) Type:
+1) Type:
 ```console
 mi-fastboot stage token.bin && mi-fastboot oem unlock
 ```
