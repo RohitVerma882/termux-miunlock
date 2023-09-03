@@ -57,6 +57,14 @@ chmod +x get_token.sh && ./get_token.sh --product=PRODUCT --token=TOKEN DATA
 ```
 if the code succeeds it will give you a really long string which is the unlock token.
 
+You should pass correct region which you used in account.apk if you got error 20045
+
+available options: `india, global, china, russia, europe`
+
+```ssh
+chmod +x get_token.sh && ./get_token.sh --product=PRODUCT --region=REGION --token=TOKEN DATA
+```
+
 8) Convert unlock token string to binary token.
   ```console
   echo "UNLOCK_TOKEN" | xxd -r -p > token.bin
