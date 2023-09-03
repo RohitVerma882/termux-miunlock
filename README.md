@@ -65,12 +65,12 @@ available options: `india, global, china, russia, europe`
 chmod +x get_token.sh && ./get_token.sh --product=PRODUCT --region=REGION --token=TOKEN DATA
 ```
 
-1) Convert unlock token string to binary token.
+8) Convert unlock token string to binary token.
   ```console
   echo "UNLOCK_TOKEN" | xxd -r -p > token.bin
   ```
 
-1) Type:
+9) Type:
 ```console
 mi-fastboot stage token.bin && mi-fastboot oem unlock
 ```
