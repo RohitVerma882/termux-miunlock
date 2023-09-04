@@ -50,7 +50,8 @@ mi-fastboot getvar token
 ```console
 mi-fastboot oem get_token
 ```
-if you received 2-3 token then merge it.
+if you received 2-3 token then merge it. 
+example:
 ```
 // Before 
 (bootloader) token: VQECMAEQTSdjm281zqPylolzfxy3bQMGbWVy
