@@ -50,6 +50,15 @@ mi-fastboot getvar token
 ```console
 mi-fastboot oem get_token
 ```
+if you received 2-3 token then merge it.
+```
+// Before 
+(bootloader) token: VQECMAEQTSdjm281zqPylolzfxy3bQMGbWVy
+(bootloader) token: bGluAhTVfQBXJGUJ78qoZQ0ctBDLQ1PkJg==
+
+// After
+VQECMAEQTSdjm281zqPylolzfxy3bQMGbWVybGluAhTVfQBXJGUJ78qoZQ0ctBDLQ1PkJg==
+```
 
 7) Run ```get_token.sh``` script with required arguments.
 ```console
@@ -61,7 +70,7 @@ You should pass correct region which you used in account.apk if you got error 20
 
 available options: `india, global, china, russia, europe`
 
-```ssh
+```console
 chmod +x get_token.sh && ./get_token.sh --product=PRODUCT --region=REGION --token=TOKEN DATA
 ```
 
