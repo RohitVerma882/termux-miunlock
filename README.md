@@ -84,7 +84,7 @@ chmod +x get_token.sh && ./get_token.sh --product=PRODUCT --region=REGION --toke
 ```console
 mi-fastboot stage token.bin && mi-fastboot oem unlock
 ```
-Or (skip step 8):
+Or (skip step 8 & 9):
 ```console
 mi-fastboot oem-unlock "UNLOCK_TOKEN"
 ```
