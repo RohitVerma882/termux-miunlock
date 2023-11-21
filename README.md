@@ -85,7 +85,7 @@ You should pass correct region which you used in account.apk if you got error 20
 available options: `india, global, china, russia, europe`
 
 ```console
-./get_token.sh --product=PRODUCT --region=REGION --token=TOKEN DATA
+./get_token.sh --region=REGION --product=PRODUCT --token=TOKEN DATA
 ```
 
 9) Convert unlock token string to binary token.
@@ -97,7 +97,7 @@ available options: `india, global, china, russia, europe`
 ```console
 mi-fastboot stage token.bin && mi-fastboot oem unlock
 ```
-Or (skip step 8):
+Or (skip step 9):
 ```console
 mi-fastboot oem-unlock "UNLOCK_TOKEN"
 ```
