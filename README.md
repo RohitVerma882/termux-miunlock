@@ -4,6 +4,7 @@ A program that can be used to retrieve the bootloader unlock token for Xiaomi de
 
 **Note: This tool cannot bypass the 7, 14, 30 day unlock time.**
 
+• [How to unlock xiaomi device bootloader using termux?](https://youtu.be/zTArE7sixJI?si=p8m0iQ-D3_abJ_23)
 
 ## Usage
 ```console
@@ -31,7 +32,7 @@ devices. (and unlock the bootloader) using Termux.
 4) Internet Connection
 
 
-## Instructions
+## Some Instructions
 1) Install required apps [termux](https://github.com/termux/termux-app), [termux-api](https://github.com/termux/termux-api) and ```account.apk``` on your host device.
 
 2) Login and bind your xiaomi account on your target device.
