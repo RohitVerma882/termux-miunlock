@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # On system with zenity use graphical mode
-if type zenity2 &> /dev/null; then
+if type zenity &> /dev/null; then
 
     # Show interface progress
     zenity --progress --pulsate --no-cancel --text "Waiting for any device in fastboot mode" &
