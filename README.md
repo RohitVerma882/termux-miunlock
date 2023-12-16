@@ -8,27 +8,26 @@ A program that can be used to retrieve the bootloader unlock token for Xiaomi de
 
 ## Usage
 ```console
-Usage: termux-miunlock [OPTIONS] DATA
+Usage: get_token.sh [OPTIONS] DATA
 A program that can be used to retrieve the bootloader unlock token for Xiaomi
-devices. (and unlock the bootloader) using Termux.
-*     DATA                Install account.apk from repo, login and copypaste
+devices. using Termux.
+*     DATA                Install account.apk from repo, login and copy-paste
                             the response.
       --debug             Output messages about what the tool is doing
       --help              Display a help message
 *     --product=PRODUCT   Used to verify device product
-      --region=REGION     Tool server host regions: india, global, china,
+      --region=REGION     Tool server hosts or regions: india, global, china,
                             russia, europe
                             Default: india
 *     --token=TOKEN       Used to verify device token
       --version           Version information
-      
 ```
 
 
 ## Requirements
 1) Verified Xiaomi Account
-2) Two Android (Host & Target) device
-3) USB Otg & Data cable
+2) Two Android device (Host/Target)
+3) USB Otg and Data cable
 4) Internet Connection
 
 
