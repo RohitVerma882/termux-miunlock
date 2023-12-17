@@ -2,7 +2,7 @@
 
 apt-get update
 apt-get --assume-yes upgrade
-apt-get --assume-yes install coreutils gnupg wget termux-api openjdk-17 vim ncurses perl
+apt-get --assume-yes install coreutils gnupg wget termux-api openjdk-17 vim ncurses perl which
   
 if [ ! -f "$PREFIX/etc/apt/sources.list.d/mi-fastboot.list" ]; then
     mkdir -p $PREFIX/etc/apt/sources.list.d
