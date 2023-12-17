@@ -1,5 +1,15 @@
 #!/usr/bin/env bash
 
+if ! type java &> /dev/null; then
+    echo "Java not detected, install java and try again"
+fi
+
+if type mi-fastboot &> /dev/null; then
+    runFastboot=mi-fastboot
+else
+    runFastboot=fastboot
+fi
+
 # On system with zenity use graphical mode
 if type zenity &> /dev/null; then
 
@@ -8,15 +18,15 @@ if type zenity &> /dev/null; then
     ZENITY_PID=$!
 
     # Detect Product
-    product=$(timeout --foreground 60 fastboot getvar product 2>&1 | grep 'product:' | cut -d ' ' -f2)
+    product=$(timeout --foreground 60 $runFastboot getvar product 2>&1 | grep 'product:' | cut -d ' ' -f2)
 
     if [[ -n $product ]]; then
         # Detect Token if have product
-        token=$(fastboot getvar token 2>&1 | grep token:| sed 's|.*token: ||g' | sed ':a;N;$!ba;s/\n//g')
+        token=$($runFastboot getvar token 2>&1 | grep token:| sed 's|.*token: ||g' | sed ':a;N;$!ba;s/\n//g')
 
         if [[ -z $token ]]; then
             #Another way to detect Token
-            token=$(fastboot oem get_token 2>&1 | grep token:| sed 's|.*token: ||g' | sed ':a;N;$!ba;s/\n//g')
+            token=$($runFastboot oem get_token 2>&1 | grep token:| sed 's|.*token: ||g' | sed ':a;N;$!ba;s/\n//g')
         fi
     else
         zenity --error --text="Timeout, device not detected."
@@ -81,9 +91,9 @@ Token: $token
             perl -e "print pack 'H*', '$unlockToken'" > ~/.cache/token.bin
 
             # Unlock
-            stageUnlock=$(fastboot stage ~/.cache/token.bin 2>&1 | sed 's/"/\\"/g')
-            oemUnlock=$(fastboot oem unlock 2>&1 | sed 's/"/\\"/g')
-            oemUnlockAgain=$(fastboot oem-unlock "$unlockToken" 2>&1 | sed 's/"/\\"/g')
+            stageUnlock=$($runFastboot stage ~/.cache/token.bin 2>&1 | sed 's/"/\\"/g')
+            oemUnlock=$($runFastboot oem unlock 2>&1 | sed 's/"/\\"/g')
+            oemUnlockAgain=$($runFastboot oem-unlock "$unlockToken" 2>&1 | sed 's/"/\\"/g')
 
             kill $ZENITY_PID
 
@@ -102,13 +112,13 @@ elif type dialog &> /dev/null; then
     (dialog --infobox "Waiting for any device in fastboot mode" 10 50) &
     DIALOG_PID=$!
 
-    product=$(timeout --foreground 60 fastboot getvar product 2>&1 | grep 'product:' | cut -d ' ' -f2)
+    product=$(timeout --foreground 60 $runFastboot getvar product 2>&1 | grep 'product:' | cut -d ' ' -f2)
 
     if [[ -n $product ]]; then
-        token=$(fastboot getvar token 2>&1 | grep token: | sed 's|.*token: ||g' | sed ':a;N;$!ba;s/\n//g')
+        token=$($runFastboot getvar token 2>&1 | grep token: | sed 's|.*token: ||g' | sed ':a;N;$!ba;s/\n//g')
 
         if [[ -z $token ]]; then
-            token=$(fastboot oem get_token 2>&1 | grep token: | sed 's|.*token: ||g' | sed ':a;N;$!ba;s/\n//g')
+            token=$($runFastboot oem get_token 2>&1 | grep token: | sed 's|.*token: ||g' | sed ':a;N;$!ba;s/\n//g')
         fi
     else
         dialog --msgbox "Timeout, device not detected." 10 50
@@ -162,9 +172,10 @@ elif type dialog &> /dev/null; then
             mkdir -p ~/.cache
             perl -e "print pack 'H*', '$unlockToken'" > ~/.cache/token.bin
 
-            stageUnlock=$(fastboot stage ~/.cache/token.bin 2>&1 | sed 's/"/\\"/g')
-            oemUnlock=$(fastboot oem unlock 2>&1 | sed 's/"/\\"/g')
-            oemUnlockAgain=$(fastboot oem-unlock "$unlockToken" 2>&1 | sed 's/"/\\"/g')
+            stageUnlock=$($runFastboot stage ~/.cache/token.bin 2>&1 | sed 's/"/\\"/g')
+            oemUnlock=$($runFastboot oem unlock 2>&1 | sed 's/"/\\"/g')
+            # Unlock Again commented
+            # oemUnlockAgain=$($runFastboot oem-unlock "$unlockToken" 2>&1 | sed 's/"/\\"/g')
 
             kill "$DIALOG_PID"
 
