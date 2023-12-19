@@ -27,7 +27,7 @@ devices. using Termux.
 ## Requirements
 1) Verified Xiaomi Account
 2) Two Android device (Host & Target)
-3) USB Otg and Data cable
+3) USB Otg & Data cable
 4) Internet Connection
 
 
