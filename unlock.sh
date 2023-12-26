@@ -34,7 +34,7 @@ if type zenity &> /dev/null; then
     fi
 
     # Close interface progress
-    kill $ZENITY_PID
+    kill "$ZENITY_PID"
 
     if [[ -n $token ]]; then
 
@@ -72,11 +72,11 @@ Token: $token
         zenity --progress --pulsate --no-cancel --text "Running java part, wait" &
         ZENITY_PID=$!
 
-        javaOutput=$(java -jar helper.jar --region=$region --product="$product" --token="$token" "$data" 2>&1 | sed 's/"/\\"/g')
+        javaOutput=$(bash get_token.sh --region=$region --product="$product" --token="$token" "$data" 2>&1 | sed 's/"/\\"/g')
 
-        unlockToken=$(echo $javaOutput | grep 'Unlock device token:' | sed 's|.*Unlock device token: ||g')
+        unlockToken=$(echo "$javaOutput" | grep 'Unlock device token:' | sed 's|.*Unlock device token: ||g')
 
-        kill $ZENITY_PID
+        kill "$ZENITY_PID"
 
         if [[ -z $unlockToken ]]; then
             zenity --info \
@@ -96,12 +96,11 @@ Token: $token
             oemUnlock=$($runFastboot oem unlock 2>&1 | sed 's/"/\\"/g')
             # oemUnlockAgain=$($runFastboot oem-unlock "$unlockToken" 2>&1 | sed 's/"/\\"/g')
 
-            kill $ZENITY_PID
+            kill "$ZENITY_PID"
 
             zenity --info \
             --text="$stageUnlock
-$oemUnlock
-$oemUnlockAgain" \
+$oemUnlock" \
             --title="Done!"
             exit
 
@@ -112,6 +111,9 @@ $oemUnlockAgain" \
 elif type dialog &> /dev/null; then
     (dialog --infobox "Waiting for any device in fastboot mode" 10 50) &
     DIALOG_PID=$!
+
+    # fix mi-fastboot device detection on termux
+    $runFastboot devices &>/dev/null
 
     product=$(timeout --foreground 60 $runFastboot getvar product 2>&1 | grep 'product:' | cut -d ' ' -f2)
 
@@ -180,7 +182,7 @@ elif type dialog &> /dev/null; then
 
             kill "$DIALOG_PID"
 
-            dialog --msgbox "$stageUnlock\n$oemUnlock\n$oemUnlockAgain" 20 60
+            dialog --msgbox "$stageUnlock\n$oemUnlock" 20 60
             exit
         fi
     fi
