@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+
 if ! type java &> /dev/null; then
     echo "Java not detected, install java and try again"
 fi
