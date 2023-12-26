@@ -1,67 +1,191 @@
-#!/data/data/com.termux/files/usr/bin/bash
+#!/usr/bin/env bash
 
-PRG="$0"
-while [ -h "$PRG" ]; do
-  ls=`ls -ld "$PRG"`
-  link=`expr "$ls" : '.*-> \(.*\)$'`
-  if expr "$link" : '/.*' > /dev/null; then
-    PRG="$link"
-  else
-    PRG=`dirname "$PRG"`/"$link"
-  fi
-done
-PRGDIR=`dirname "$PRG"`
 
-cygwin=false;
-darwin=false;
-case "`uname`" in
-  CYGWIN*) cygwin=true
-    ;;
-  Darwin*) darwin=true
-    if [ -z "$JAVA_VERSION" ] ; then
-      JAVA_VERSION="CurrentJDK"
+if ! type java &> /dev/null; then
+    echo "Java not detected, install java and try again"
+fi
+
+if type mi-fastboot &> /dev/null; then
+    runFastboot=mi-fastboot
+else
+    runFastboot=fastboot
+fi
+
+# On system with zenity use graphical mode
+if type zenity &> /dev/null; then
+
+    # Show interface progress
+    zenity --progress --pulsate --no-cancel --text "Waiting for any device in fastboot mode" &
+    ZENITY_PID=$!
+
+    # Detect Product
+    product=$(timeout --foreground 60 $runFastboot getvar product 2>&1 | grep 'product:' | cut -d ' ' -f2)
+
+    if [[ -n $product ]]; then
+        # Detect Token if have product
+        token=$($runFastboot getvar token 2>&1 | grep token:| sed 's|.*token: ||g' | sed ':a;N;$!ba;s/\n//g')
+
+        if [[ -z $token ]]; then
+            #Another way to detect Token
+            token=$($runFastboot oem get_token 2>&1 | grep token:| sed 's|.*token: ||g' | sed ':a;N;$!ba;s/\n//g')
+        fi
     else
-      echo "Using Java version: $JAVA_VERSION"
+        zenity --error --text="Timeout, device not detected."
     fi
-    if [ -z "$JAVA_HOME" ]; then
-      if [ -x "/usr/libexec/java_home" ]; then
-        JAVA_HOME=`/usr/libexec/java_home`
-      else
-        JAVA_HOME=/System/Library/Frameworks/JavaVM.framework/Versions/${JAVA_VERSION}/Home
-      fi
+
+    # Close interface progress
+    kill $ZENITY_PID
+
+    if [[ -n $token ]]; then
+
+
+        region=$(zenity --height=360 --list --text="
+Product: $product
+
+Token: $token
+" \
+        --title="Detected device" \
+        --radiolist \
+        --column="Select" --column="Region" \
+        TRUE "global" \
+        FALSE "india" \
+        FALSE "china" \
+        FALSE "russia" \
+        FALSE "europe")
+
+
+        # Check if a choice was made
+        if [ -n "$region" ]; then
+            data=$(zenity --entry \
+            --title="Enter DATA" \
+            --text="Enter the giant code obtained from the apk used on your Xiaomi device:")
+
+            if [[ -z $data ]]; then
+                zenity --error --text="Canceled, see you next time my friend."
+                exit
+            fi
+        else
+            zenity --error --text="Canceled, see you next time my friend."
+            exit
+        fi
+
+        zenity --progress --pulsate --no-cancel --text "Running java part, wait" &
+        ZENITY_PID=$!
+
+        javaOutput=$(java -jar helper.jar --region=$region --product="$product" --token="$token" "$data" 2>&1 | sed 's/"/\\"/g')
+
+        unlockToken=$(echo $javaOutput | grep 'Unlock device token:' | sed 's|.*Unlock device token: ||g')
+
+        kill $ZENITY_PID
+
+        if [[ -z $unlockToken ]]; then
+            zenity --info \
+            --text="$javaOutput" \
+            --title="Done!"
+            exit
+        else
+            zenity --progress --pulsate --no-cancel --text "Unlocking, wait" &
+            ZENITY_PID=$!
+
+            # Convert using perl to replace xxd
+            mkdir -p ~/.cache
+            perl -e "print pack 'H*', '$unlockToken'" > ~/.cache/token.bin
+
+            # Unlock
+            stageUnlock=$($runFastboot stage ~/.cache/token.bin 2>&1 | sed 's/"/\\"/g')
+            oemUnlock=$($runFastboot oem unlock 2>&1 | sed 's/"/\\"/g')
+            oemUnlockAgain=$($runFastboot oem-unlock "$unlockToken" 2>&1 | sed 's/"/\\"/g')
+
+            kill $ZENITY_PID
+
+            zenity --info \
+            --text="$stageUnlock
+$oemUnlock
+$oemUnlockAgain" \
+            --title="Done!"
+            exit
+
+        fi
     fi
-    ;;
-esac
 
-if [ -z "$JAVA_HOME" ] ; then
-  if [ -r /etc/gentoo-release ] ; then
-    JAVA_HOME=`java-config --jre-home`
-  fi
-fi
+# On system with dialog, like Termux
+elif type dialog &> /dev/null; then
+    (dialog --infobox "Waiting for any device in fastboot mode" 10 50) &
+    DIALOG_PID=$!
 
-if $cygwin ; then
-  [ -n "$JAVA_HOME" ] && JAVA_HOME=`cygpath --unix "$JAVA_HOME"`
-fi
+    product=$(timeout --foreground 60 $runFastboot getvar product 2>&1 | grep 'product:' | cut -d ' ' -f2)
 
-if [ -z "$JAVACMD" ] ; then
-  if [ -n "$JAVA_HOME"  ] ; then
-    if [ -x "$JAVA_HOME/jre/sh/java" ] ; then
-      JAVACMD="$JAVA_HOME/jre/sh/java"
+    if [[ -n $product ]]; then
+        token=$($runFastboot getvar token 2>&1 | grep token: | sed 's|.*token: ||g' | sed ':a;N;$!ba;s/\n//g')
+
+        if [[ -z $token ]]; then
+            token=$($runFastboot oem get_token 2>&1 | grep token: | sed 's|.*token: ||g' | sed ':a;N;$!ba;s/\n//g')
+        fi
     else
-      JAVACMD="$JAVA_HOME/bin/java"
+        dialog --msgbox "Timeout, device not detected." 10 50
+        kill "$DIALOG_PID"
+        exit 1
     fi
-  else
-    JAVACMD=`which java`
-  fi
-fi
 
-if [ ! -x "$JAVACMD" ] ; then
-  echo "Error: JAVA_HOME is not defined correctly. We cannot execute $JAVACMD" 1>&2
-  exit 1
-fi
+    kill "$DIALOG_PID"
 
-if $cygwin ; then
-  [ -n "$JAVA_HOME" ] && JAVA_HOME=`cygpath --path --windows "$JAVA_HOME"`
-fi
+    if [[ -n $token ]]; then
+        exec 3>&1
+        region=$(dialog --radiolist "Detected device\n\nProduct: $product\n\nToken: $token" 15 50 5 \
+        "global" "Global" on \
+        "india" "India" off \
+        "china" "China" off \
+        "russia" "Russia" off \
+        "europe" "Europe" off \
+        2>&1 1>&3)
+        exec 3>&-
 
-exec "$JAVACMD" -jar "$PRGDIR/get_token.jar" "$@"
+        if [ -z "$region" ]; then
+            dialog --msgbox "Canceled, see you next time my friend." 10 50
+            exit
+        fi
+
+        exec 3>&1
+        data=$(dialog --inputbox "Enter the giant code obtained from the apk used on your Xiaomi device:" 10 50 2>&1 1>&3)
+        exec 3>&-
+
+        if [[ -z $data ]]; then
+            dialog --msgbox "Canceled, see you next time my friend." 10 50
+            exit
+        fi
+
+        (dialog --infobox "Running java part, wait" 10 50) &
+        DIALOG_PID=$!
+
+        javaOutput=$(java -jar helper.jar --region=$region --product="$product" --token="$token" "$data" 2>&1 | sed 's/"/\\"/g')
+
+        unlockToken=$(echo "$javaOutput" | grep "Unlock device token:" | sed 's|.*Unlock device token: ||g')
+
+        kill "$DIALOG_PID"
+
+        if [[ -z $unlockToken ]]; then
+            dialog --msgbox "$javaOutput" 20 60
+            exit
+        else
+            (dialog --infobox "Unlocking, wait" 10 50) &
+            DIALOG_PID=$!
+
+            mkdir -p ~/.cache
+            perl -e "print pack 'H*', '$unlockToken'" > ~/.cache/token.bin
+
+            stageUnlock=$($runFastboot stage ~/.cache/token.bin 2>&1 | sed 's/"/\\"/g')
+            oemUnlock=$($runFastboot oem unlock 2>&1 | sed 's/"/\\"/g')
+            # Unlock Again commented
+            # oemUnlockAgain=$($runFastboot oem-unlock "$unlockToken" 2>&1 | sed 's/"/\\"/g')
+
+            kill "$DIALOG_PID"
+
+            dialog --msgbox "$stageUnlock\n$oemUnlock\n$oemUnlockAgain" 20 60
+            exit
+        fi
+    fi
+
+# if don't have zenity or dialog
+else
+    exec java -jar helper.jar "$@"
+fi

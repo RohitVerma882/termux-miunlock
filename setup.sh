@@ -1,4 +1,6 @@
-#!/data/data/com.termux/files/usr/bin/bash
+#!/usr/bin/env bash
+
+if type termux-info &> /dev/null; then
 
 apt-get update
 apt-get --assume-yes upgrade
@@ -16,3 +18,17 @@ else
 fi
 
 echo "done!"
+
+elif type fastboot &> /dev/null; then
+
+  echo "Fastboot is already installed"
+
+
+else
+
+
+
+
+  echo "I didn't find fastboot, please install it before proceeding."
+  
+fi
