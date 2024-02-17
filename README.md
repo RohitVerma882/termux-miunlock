@@ -106,4 +106,4 @@ mi-fastboot oem-unlock "UNLOCK_TOKEN"
 The device will factory reset and unlock successfully.
 
 ## More projects
-[TADB](https://play.google.com/store/apps/details?id=com.rv882.adbify)
+[TADB: Terminal ADB, USB OTG](https://play.google.com/store/apps/details?id=com.rv882.adbify)
