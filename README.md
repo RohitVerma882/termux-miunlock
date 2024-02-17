@@ -1,4 +1,4 @@
-# termux-miunlock
+# Termux MiUnlock
 
 A program that can be used to retrieve the bootloader unlock token for Xiaomi devices. (and unlock the bootloader) using Termux
 
@@ -105,5 +105,5 @@ mi-fastboot oem-unlock "UNLOCK_TOKEN"
 
 The device will factory reset and unlock successfully.
 
-## More projects
+## More Projects
 [TADB: Terminal ADB, USB OTG](https://play.google.com/store/apps/details?id=com.rv882.adbify)
