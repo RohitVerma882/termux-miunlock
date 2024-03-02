@@ -6,6 +6,7 @@ A program that can be used to retrieve the bootloader unlock token for Xiaomi de
 
 • [How to unlock xiaomi device bootloader using termux?](https://youtu.be/zTArE7sixJI?si=p8m0iQ-D3_abJ_23)
 
+
 ## Usage
 ```console
 Usage: get_token.sh [OPTIONS] DATA
@@ -105,9 +106,10 @@ mi-fastboot oem-unlock "UNLOCK_TOKEN"
 
 The device will factory reset and unlock successfully.
 
-## More Projects
-[TADB: Terminal ADB, USB OTG](https://play.google.com/store/apps/details?id=com.rv882.adbify),
 
-[Heimdoo: Samsung flashing Tool](https://github.com/RohitVerma882/Heimdoo),
+## More Projects
+[TADB: Terminal ADB, USB OTG](https://play.google.com/store/apps/details?id=com.rv882.adbify)
+
+[Heimdoo: Samsung flashing Tool](https://github.com/RohitVerma882/Heimdoo)
 
 [termux-adb: Prebuilt binarys for Termux](https://github.com/RohitVerma882/termux-adb)
