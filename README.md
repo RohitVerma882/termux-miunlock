@@ -108,8 +108,8 @@ The device will factory reset and unlock successfully.
 
 
 ## More Projects
-[TADB: Terminal ADB, USB OTG](https://play.google.com/store/apps/details?id=com.rv882.adbify)
+[ADBify — Android Debug Bridge](https://play.google.com/store/apps/details?id=com.rv882.adbify)
 
-[Heimdoo: Samsung flashing Tool](https://github.com/RohitVerma882/Heimdoo)
+[Heimdoo — Samsung flashing Tool](https://github.com/RohitVerma882/Heimdoo)
 
-[termux-adb: Prebuilt binarys for Termux](https://github.com/RohitVerma882/termux-adb)
+[termux-adb — prebuilt adb & fastboot binaries for Termux](https://github.com/RohitVerma882/termux-adb)
