@@ -64,4 +64,35 @@ if $cygwin ; then
   [ -n "$JAVA_HOME" ] && JAVA_HOME=`cygpath --path --windows "$JAVA_HOME"`
 fi
 
-exec "$JAVACMD" -jar "$PRGDIR/get_token.jar" "$@"
+# Prompting the user for input
+echo "Please enter the region (e.g., india, global, china, russia, europe):"
+read -p "Region: " REGION
+
+echo "You can get the device product by running 'fastboot getvar product'."
+read -p "Please enter the device product: " DEVICE_PRODUCT
+
+echo "You can get the fastboot token by running 'fastboot getvar token' or 'fastboot oem get_token'."
+read -p "Fastboot token: " FASTBOOT_TOKEN
+
+echo "You can get the MIUnlockAccount ID information from the MIUnlockAccount app."
+read -p "MIUnlockAccount ID: " MI_UNLOCK_ACCOUNT
+
+# Executing the Java command with user inputs
+OUTPUT=$( "$JAVACMD" -jar "$PRGDIR/get_token.jar" --region="$REGION" --product="$DEVICE_PRODUCT" --token="$FASTBOOT_TOKEN" "$MI_UNLOCK_ACCOUNT" )
+
+# Print the output
+echo "$OUTPUT"
+
+# Extract the Unlock device token from the output
+UNLOCK_TOKEN=$(echo "$OUTPUT" | grep -oP 'Unlock device token: \K[0-9A-F]+')
+
+# Save the token to a binary file
+if [ -n "$UNLOCK_TOKEN" ]; then
+  TOKEN_FILE="$PRGDIR/token.bin"
+  echo "$UNLOCK_TOKEN" | xxd -r -p > "$TOKEN_FILE"
+  echo "Unlock device token saved to $TOKEN_FILE"
+  echo "Now you can unlock your Xiaomi device by running:"
+  echo "fastboot stage $TOKEN_FILE && fastboot oem unlock"
+else
+  echo "Failed to find the Unlock device token in the output"
+fi
