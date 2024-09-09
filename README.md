@@ -109,9 +109,5 @@ The device will factory reset and unlock successfully.
 
 
 
-## More Projects
+## Checkout my other apps
 [ADBify — Android Debug Bridge](https://play.google.com/store/apps/details?id=com.rv882.adbify)
-
-[Heimdoo — Samsung flashing Tool](https://github.com/RohitVerma882/Heimdoo)
-
-[termux-adb — Prebuilt adb & fastboot binaries for Termux](https://github.com/RohitVerma882/termux-adb)
