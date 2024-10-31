@@ -106,8 +106,3 @@ mi-fastboot oem-unlock "UNLOCK_TOKEN"
 ```
 
 The device will factory reset and unlock successfully.
-
-
-
-## Checkout my other apps
-[ADBify — Android Debug Bridge](https://play.google.com/store/apps/details?id=com.rv882.adbify)
