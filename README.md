@@ -51,17 +51,17 @@ chmod +x setup.sh && ./setup.sh
 
 5) Get device ```product```
 ```console
-mi-fastboot getvar product
+termux-fastboot getvar product
 ```
 
 6) Get device ```token```
 ```console
-mi-fastboot getvar token
+termux-fastboot getvar token
 ```
 
 7) Get device ```token``` for mtk device.
 ```console
-mi-fastboot oem get_token
+termux-fastboot oem get_token
 ```
 if you received 2 or 3 token then merge it, 
 example:
@@ -98,11 +98,11 @@ available options: `india, global, china, russia, europe`
 
 10) Type:
 ```console
-mi-fastboot stage token.bin && mi-fastboot oem unlock
+termux-fastboot stage token.bin && termux-fastboot oem unlock
 ```
 Or (skip step 9):
 ```console
-mi-fastboot oem-unlock "UNLOCK_TOKEN"
+termux-fastboot oem-unlock "UNLOCK_TOKEN"
 ```
 
 The device will factory reset and unlock successfully.
