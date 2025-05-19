@@ -96,13 +96,11 @@ available options: `india, global, china, russia, europe`
   echo "UNLOCK_TOKEN" | xxd -r -p > token.bin
   ```
 
-10) Type:
+10) Verify token & unlock bootloader.
 ```console
 termux-fastboot stage token.bin && termux-fastboot oem unlock
 ```
-Or (skip step 9):
-```console
-termux-fastboot oem-unlock "UNLOCK_TOKEN"
-```
+
+
 
 The device will factory reset and unlock successfully.
