@@ -4,8 +4,8 @@ if ! type java &> /dev/null; then
     echo "Java not detected, install java and try again"
 fi
 
-if type mi-fastboot &> /dev/null; then
-    runFastboot=mi-fastboot
+if type termux-fastboot &> /dev/null; then
+    runFastboot=termux-fastboot
 else
     runFastboot=fastboot
 fi
